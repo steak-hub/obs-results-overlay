@@ -142,10 +142,14 @@ if (!tournamentId) {
     setup();
 }
 
-// Debug helper to show errors on screen if something fails
 function showDebug(msg) {
     tickerContainer.classList.remove('hidden');
-    tickerContent.innerHTML = `<div class="ticker-item active" style="color: #ef4444; font-size: 16px; white-space: normal;">${msg}</div>`;
+    const item = document.createElement('div');
+    item.className = 'ticker-item active';
+    item.style.cssText = 'color: #ef4444; font-size: 16px; white-space: normal;';
+    item.textContent = msg;
+    tickerContent.innerHTML = '';
+    tickerContent.appendChild(item);
 }
 
 /**
