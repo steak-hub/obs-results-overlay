@@ -156,9 +156,10 @@ async function fetchAndParseCSV(url) {
 
     // Try each proxy until one works
     for (let i = 0; i < PROXIES.length; i++) {
-        const proxyBase = PROXIES[currentProxyIndex];
+        const proxyIndex = (currentProxyIndex + i) % PROXIES.length;
+        const proxyBase = PROXIES[proxyIndex];
         const proxyUrl = proxyBase + encodeURIComponent(url);
-        
+
         try {
             const response = await fetch(proxyUrl);
             if (!response.ok) {
@@ -167,14 +168,16 @@ async function fetchAndParseCSV(url) {
                 // We should not cycle proxies.
                 if (response.status >= 400 && response.status < 500) {
                     console.warn(`Upstream API returned ${response.status} via ${proxyBase}. Retrying next poll.`);
-                    return; 
+                    currentProxyIndex = proxyIndex;
+                    return;
                 }
                 throw new Error(`Proxy error: ${response.status}`);
             }
-            
+
             const csvText = await response.text();
-            
+
             // If we got here, it worked!
+            currentProxyIndex = proxyIndex;
             Papa.parse(csvText, {
                 header: true,
                 skipEmptyLines: true,
@@ -191,8 +194,6 @@ async function fetchAndParseCSV(url) {
         } catch (err) {
             console.warn(`Proxy ${proxyBase} failed:`, err);
             lastError = err;
-            // Move to the next proxy for the next attempt
-            currentProxyIndex = (currentProxyIndex + 1) % PROXIES.length;
         }
     }
 
