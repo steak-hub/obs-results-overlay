@@ -8,8 +8,12 @@ const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 
-// Serve static files (HTML, CSS, JS) from the current directory
-app.use(express.static(__dirname));
+// dont only use security by obscurity
+const allowedFiles = ['/', '/index.html', '/settings.html', '/style.css', '/ticker.js'];
+app.get(allowedFiles, (req, res, next) => {
+    let filePath = req.path === '/' ? 'index.html' : req.path.slice(1);
+    res.sendFile(path.join(__dirname, filePath));
+});
 
 /**
  * Proxy endpoint to bypass CORS
@@ -23,6 +27,18 @@ app.get('/proxy', async (req, res) => {
     }
 
     try {
+        const parsedUrl = new URL(targetUrl);
+        
+        // Only allow HTTPS and restricted to Matchplay domain (address SSRF risk)
+        if (parsedUrl.protocol !== 'https:') {
+            return res.status(403).send('Only HTTPS URLs are allowed.');
+        }
+
+        const allowedHosts = ['app.matchplay.events'];
+        if (!allowedHosts.includes(parsedUrl.hostname)) {
+            return res.status(403).send(`Restricted domain: ${parsedUrl.hostname} is not allowed.`);
+        }
+
         console.log(`Proxying request to: ${targetUrl}`);
         
         const response = await axios.get(targetUrl, {
@@ -30,10 +46,9 @@ app.get('/proxy', async (req, res) => {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
             },
-            validateStatus: () => true // Allow all HTTP status codes without throwing
+            validateStatus: () => true 
         });
 
-        // Set the correct Content-Type from the original response (e.g. text/csv)
         res.setHeader('Content-Type', response.headers['content-type'] || 'text/plain');
         res.status(response.status).send(response.data);
     } catch (error) {

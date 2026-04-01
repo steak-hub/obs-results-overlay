@@ -420,13 +420,17 @@ function displayNextResult() {
         htmlContent += `<div class="arena-label">${game.arenaName.toUpperCase()}</div>`;
     }
     
+    const escapeHTML = (str) => String(str).replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[m]);
+
     // Build the string representation of all players in this single game
     game.players.forEach((p, index) => {
         const posClass = `pos-${index + 1}`;
         htmlContent += `
             <div class="player-entry">
                 <span class="position-badge ${posClass}">${index + 1}</span>
-                <span class="player-name">${p.playerName}</span>
+                <span class="player-name">${escapeHTML(p.playerName)}</span>
             </div>
         `;
     });
