@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matchplay Results Ticker</title>
+    <!-- Modern font for premium feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- PapaParse for parsing CSV data easily -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+    <div id="ticker-container" class="hidden">
+        <div class="ticker-label">LATEST RESULTS</div>
+        <div id="ticker-content">
+            <!-- Ticker items will be dynamically injected here -->
+        </div>
+    </div>
+    
+    <script src="ticker.js"></script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+/* style.css */
+:root {
+    --bg-color: rgba(15, 23, 42, 0.85); /* Slate 900 with opacity */
+    --accent-color: #3b82f6; /* Blue 500 */
+    --text-color: #f8fafc; /* Slate 50 */
+    --text-muted: #94a3b8; /* Slate 400 */
+    --border-color: rgba(255, 255, 255, 0.1);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', -apple-system, sans-serif;
+    overflow: hidden; /* Necessary so OBS doesn't show scrollbars */
+    background-color: transparent; /* Allows OBS games to show underneath */
+    color: var(--text-color);
+}
+
+#ticker-container {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    right: 40px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    background: var(--bg-color);
+    
+    /* Premium glassmorphism effect */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    
+    overflow: hidden;
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#ticker-container.hidden {
+    opacity: 0;
+    transform: translateY(100px);
+    pointer-events: none;
+}
+
+.ticker-label {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: 1px;
+    padding: 0 24px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    text-transform: uppercase;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.3);
+    z-index: 5;
+    position: relative;
+}
+
+#ticker-content {
+    flex-grow: 1;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    padding: 0 24px;
+}
+
+.ticker-item {
+    position: absolute;
+    top: 0;
+    left: 24px;
+    right: 24px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    
+    /* Animation defaults */
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    white-space: nowrap;
+}
+
+.ticker-item.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.ticker-item.exit {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+.round-label {
+    flex-shrink: 0;
+    font-weight: 800;
+    font-size: 14px;
+    color: white;
+    background: rgba(255,255,255,0.05);
+    padding: 2px 10px;
+    border-radius: 4px;
+    margin-right: 24px;
+    border: 1px solid rgba(255,255,255,0.1);
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    width: max-content;
+    min-width: 80px;
+    text-align: center;
+}
+
+.round-label.special-round {
+    background: var(--accent-color);
+    color: white;
+    box-shadow: 0 0 15px var(--accent-color);
+    border-color: transparent;
+}
+
+.player-entry {
+    display: flex;
+    align-items: center;
+    margin-right: 32px;
+}
+
+.position-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    font-size: 14px;
+    font-weight: 800;
+    margin-right: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Distinctive colors for podium positions */
+.pos-1 { background: linear-gradient(135deg, #fbbf24, #d97706); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); border-color: #fcd34d; } 
+.pos-2 { background: linear-gradient(135deg, #cbd5e1, #94a3b8); color: #0f172a; border-color: #e2e8f0; } 
+.pos-3 { background: linear-gradient(135deg, #d97706, #b45309); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); } 
+.pos-4 { background: #475569; color: #f8fafc; }
+
+.player-name {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.arena-label {
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--game-name-color, rgba(255,255,255,0.4));
+    margin-right: 24px;
+    letter-spacing: 0.5px;
+    font-style: italic;
+    white-space: nowrap;
+    border-left: 1px solid rgba(255,255,255,0.1);
+    padding-left: 12px;
+}
+
+/* --- Vertical Box Layout --- */
+.layout-vertical #ticker-container {
+    width: var(--box-width, 380px);
+    height: auto;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding-bottom: 20px;
+    /* Reset default position, to be overridden by anchor classes */
+    left: auto;
+    right: auto;
+    top: auto;
+    bottom: auto;
+}
+
+/* Anchor classes for vertical box positioning */
+#ticker-container.anchor-bottom-left { bottom: 40px; left: 40px; }
+#ticker-container.anchor-bottom-right { bottom: 40px; right: 40px; }
+#ticker-container.anchor-top-left { top: 40px; left: 40px; }
+#ticker-container.anchor-top-right { top: 40px; right: 40px; }
+
+/* In vertical layout, adjust the hidden animation */
+.layout-vertical #ticker-container.hidden {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+    pointer-events: none;
+}
+
+.layout-vertical .ticker-label {
+    height: auto;
+    padding: 16px 20px;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.layout-vertical #ticker-content {
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    /* Height will be managed dynamically by ticker.js based on content */
+    transition: height 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: block;
+}
+
+.layout-vertical .ticker-item {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    height: auto;
+    flex-direction: column;
+    align-items: flex-start;
+    white-space: normal;
+}
+
+.layout-vertical .round-label {
+    margin-bottom: 8px;
+    margin-right: 0;
+    align-self: center;
+    text-align: center;
+}
+
+.layout-vertical .arena-label {
+    border-left: none;
+    padding-left: 0;
+    margin-right: 0;
+    margin-bottom: 16px;
+    align-self: center;
+    text-align: center;
+}
+
+.layout-vertical .player-entry {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 8px;
+    background: rgba(255,255,255,0.05);
+    padding: 10px 14px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: background-color 0.2s;
+}
+
+.layout-vertical .player-entry:last-child {
+    margin-bottom: 0;
+}

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matchplay Overlay Settings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .settings-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 32px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--accent-color);
+            text-align: center;
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="color"] {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 16px;
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        input[type="color"] {
+            padding: 6px;
+            height: 48px;
+            cursor: pointer;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="color"]:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .helper-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: var(--accent-hover);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .result-container {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+            display: none;
+        }
+
+        .result-container.show {
+            display: block;
+        }
+
+        .url-output {
+            background-color: var(--bg-color);
+            border: 1px dashed var(--border-color);
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            word-break: break-all;
+            color: #fbbf24;
+            margin-bottom: 12px;
+            user-select: all;
+        }
+
+        .copy-btn {
+            background-color: var(--border-color);
+            color: var(--text-color);
+            margin-top: 0;
+        }
+
+        .copy-btn:hover {
+            background-color: #475569;
+        }
+    </style>
+</head>
+<body>
+
+<div class="settings-container">
+    <h1>Overlay Settings</h1>
+
+    <div class="form-group">
+        <label for="tournamentId">Matchplay Tournament ID (Required)</label>
+        <input type="text" id="tournamentId" placeholder="e.g. 240411" required>
+        <div class="helper-text">Find this in your Matchplay event URL</div>
+    </div>
+
+    <div class="form-group">
+        <label for="title">Custom Title</label>
+        <input type="text" id="title" placeholder="LATEST RESULTS">
+        <div class="helper-text">Leave blank for default "LATEST RESULTS"</div>
+    </div>
+
+    <div class="form-group">
+        <label for="speed">Display Speed (Seconds)</label>
+        <input type="number" id="speed" placeholder="6" min="2" max="30">
+        <div class="helper-text">How long each match results shows on screen</div>
+    </div>
+
+    <div class="form-group">
+        <label for="layout">Layout Style</label>
+        <select id="layout" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color); font-size: 16px; font-family: inherit; margin-bottom: 4px;">
+            <option value="horizontal">Horizontal Ticker (Default, Bottom Bar)</option>
+            <option value="vertical">Vertical Box (Pop-up Card)</option>
+        </select>
+        <div class="helper-text">Changes how the match results are stacked and displayed</div>
+    </div>
+
+    <div id="verticalSettings" style="display: none; background: rgba(0,0,0,0.2); padding: 16px; border-radius: 8px; margin-bottom: 20px; border: 1px dashed var(--border-color);">
+        <label style="color: var(--accent-color); font-weight: 800; margin-bottom: 12px; font-size: 15px;">Vertical Box Settings</label>
+        
+        <div class="form-group" style="margin-bottom: 12px;">
+            <label for="anchor">Anchor Position</label>
+            <select id="anchor" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color); font-size: 14px;">
+                <option value="bottom-left">Bottom Left (Default)</option>
+                <option value="bottom-right">Bottom Right</option>
+                <option value="top-left">Top Left</option>
+                <option value="top-right">Top Right</option>
+            </select>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+            <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                <label for="boxWidth">Box Width (px)</label>
+                <input type="number" id="boxWidth" placeholder="380">
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Theme Colors</label>
+        <div style="display: flex; gap: 12px; margin-top: 8px;">
+            <div style="flex: 1;">
+                <input type="color" id="bgColor" value="#0f172a">
+                <div class="helper-text" style="text-align: center;">Background</div>
+            </div>
+            <div style="flex: 1;">
+                <input type="color" id="accentColor" value="#3b82f6">
+                <div class="helper-text" style="text-align: center;">Accent</div>
+            </div>
+            <div style="flex: 1;">
+                <input type="color" id="gameNameColor" value="#94a3b8">
+                <div class="helper-text" style="text-align: center;">Game Name</div>
+            </div>
+        </div>
+        <div class="helper-text" style="margin-top: 8px;">Changes the banner gradient, glassmorphism, and text colors</div>
+    </div>
+
+    <button onclick="generateUrl()">Generate OBS URL</button>
+
+    <div id="resultBox" class="result-container">
+        <label>Add this URL as a Browser Source in OBS:</label>
+        <div id="generatedUrl" class="url-output"></div>
+        <button class="copy-btn" onclick="copyUrl()">Copy to Clipboard</button>
+    </div>
+</div>
+
+<script>
+    document.getElementById('layout').addEventListener('change', function(e) {
+        document.getElementById('verticalSettings').style.display = e.target.value === 'vertical' ? 'block' : 'none';
+    });
+
+    function generateUrl() {
+        const tId = document.getElementById('tournamentId').value.trim();
+        if (!tId) {
+            alert('Please enter a Tournament ID!');
+            return;
+        }
+
+        const title = document.getElementById('title').value.trim();
+        const speed = document.getElementById('speed').value.trim();
+        const layout = document.getElementById('layout').value;
+        const anchor = document.getElementById('anchor').value;
+        const boxWidth = document.getElementById('boxWidth').value.trim();
+        const bgColor = document.getElementById('bgColor').value;
+        const accentColor = document.getElementById('accentColor').value;
+        const gameNameColor = document.getElementById('gameNameColor').value;
+
+        // Get the current base URL where index.html lives
+        let baseUrl = window.location.href.split('?')[0]; // strip any weird query params on the settings page
+        if (baseUrl.startsWith('file://')) {
+            baseUrl = 'http://localhost:8080/index.html';
+        } else {
+            // Find the last slash to get the directory path, then append index.html
+            const lastSlash = baseUrl.lastIndexOf('/');
+            baseUrl = baseUrl.substring(0, lastSlash + 1) + 'index.html';
+        }
+
+        const params = new URLSearchParams();
+        params.append('tournament', tId);
+        
+        if (title) params.append('title', title);
+        if (speed) params.append('speed', speed);
+        
+        if (layout === 'vertical') {
+            params.append('layout', 'vertical');
+            if (anchor !== 'bottom-left') params.append('anchor', anchor);
+            if (boxWidth) params.append('width', boxWidth);
+        }
+        
+        // Only append colors if they differ from the defaults to keep URLs clean
+        if (bgColor && bgColor !== '#0f172a') params.append('bgColor', bgColor.replace('#', ''));
+        if (accentColor && accentColor !== '#3b82f6') params.append('accentColor', accentColor.replace('#', ''));
+        if (gameNameColor && gameNameColor !== '#94a3b8') params.append('gameNameColor', gameNameColor.replace('#', ''));
+
+        const finalUrl = `${baseUrl}?${params.toString()}`;
+        
+        document.getElementById('generatedUrl').textContent = finalUrl;
+        document.getElementById('resultBox').classList.add('show');
+    }
+
+    function copyUrl() {
+        const urlText = document.getElementById('generatedUrl').textContent;
+        navigator.clipboard.writeText(urlText).then(() => {
+            const btn = document.querySelector('.copy-btn');
+            const originalText = btn.textContent;
+            btn.textContent = 'Copied!';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        });
+    }
+</script>
+
+</body>
+</html>
