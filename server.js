@@ -53,7 +53,7 @@ app.get('/proxy', async (req, res) => {
         res.status(response.status).send(response.data);
     } catch (error) {
         console.error('Error proxying request:', error.message);
-        res.status(500).send(`Failed to fetch URL: ${error.message}`);
+        res.status(500).send('Proxy request failed.');
     }
 });
 
